@@ -1,0 +1,76 @@
+const CURRENCY_VALUES = [
+  ["PENNY", 0.01],
+  ["NICKEL", 0.05],
+  ["DIME", 0.10],
+  ["QUARTER", 0.25],
+  ["ONE", 1.00],
+  ["FIVE", 5.00],
+  ["TEN", 10.00],
+  ["TWENTY", 20.00],
+  ["ONE HUNDRED", 100.00]
+];
+
+function checkCashRegister(price, cash, cid) {
+ let changeDue = cash-price;
+ let cidTotalAmount = 0;
+ let currency = [];
+ 
+ const statusChange = {status: "", change: []};
+ 
+ for (let curr of cid) {
+   cidTotalAmount += curr[1] 
+ }
+ if (cidTotalAmount === changeDue) {
+   statusChange.status = "CLOSED";
+   statusChange.change = cid;
+   return statusChange;
+ } else if (changeDue > cidTotalAmount) {
+   statusChange.status = "INSUFFICIENT_FUNDS";
+   return statusChange;
+ }
+  
+ const cashReturn = calculateChange(changeDue, cid, CURRENCY_VALUES);
+ changeDue = cashReturn.change;
+ currency = cashReturn.currency;
+
+//if unable to return exact change
+ if (changeDue > 0) {
+   statusChange.status = "INSUFFICIENT_FUNDS";
+   return statusChange;
+ } 
+  statusChange.status = "OPEN";
+  statusChange.change = currency
+
+  return statusChange;
+}
+
+
+
+function calculateChange (change, cid, currencyValues) {
+  let length = cid.length-1;
+  const cashReturn = {
+    currency: [],
+    change: 0
+  }
+
+  for (let current of cid.reverse()) {
+    let currency = [currencyValues[length][0],0];
+
+    while (change >= currencyValues[length][1] && current[1] > 0) {
+      change -= currencyValues[length][1];
+      change = change.toFixed(2);
+      current[1] -= currencyValues[length][1];
+      current[1] = current[1].toFixed(2);
+      currency[1] += currencyValues[length][1];
+    }
+    
+    if (currency[1] > 0) {
+      cashReturn.currency.push(currency);
+    }
+    
+    length --;
+  }
+  cashReturn.change = change;
+
+  return cashReturn;
+}
