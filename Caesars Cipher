@@ -1,0 +1,24 @@
+function rot13(str) {
+  const alphabet = "abcdefghijklmnopqrstuvwxyz".toUpperCase().split("");
+  let crypted = str.split("");
+  let converted = [];
+
+  for (let i = 0; i < crypted.length; i++) {
+
+    if(crypted[i].match(/^\w+$/)) {
+      let index = alphabet.indexOf(crypted[i]);
+
+      if (index + 13 >= 26) {
+        index = index + 13 - 26;
+      } else {
+        index = index + 13;
+      }
+      converted.push(alphabet[index]);  
+    }
+    else {
+      converted.push(crypted[i]); 
+    }
+  }
+  let decrypted = converted.join("");
+  return decrypted;
+}
